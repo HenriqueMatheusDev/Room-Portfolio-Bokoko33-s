@@ -26,14 +26,20 @@ export default class Controls {
 
         document.querySelector(".page").style.overflow = "visible";
 
-        this.setSmoothScroll();
+        if (
+            !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                navigator.userAgent
+            )
+        ) {
+            this.setSmoothScroll();
+        }
         this.setScrollTrigger();
     }
 
     setupASScroll() {
         // https://github.com/ashthornton/asscroll
         const asscroll = new ASScroll({
-            ease: 0.5,
+            ease: 0.1,
             disableRaf: true,
         });
 
@@ -88,6 +94,8 @@ export default class Controls {
                 this.room.scale.set(0.11, 0.11, 0.11);
                 this.rectLight.width = 0.5;
                 this.rectLight.height = 0.7;
+                this.camera.orthographicCamera.position.set(0, 6.5, 10);
+                this.room.position.set(0, 0, 0);
                 // First section -----------------------------------------
                 this.firstMoveTimeline = new GSAP.timeline({
                     scrollTrigger: {
@@ -95,15 +103,19 @@ export default class Controls {
                         start: "top top",
                         end: "bottom bottom",
                         scrub: 0.6,
-                        markers: true,
-                        // invalidateOnRefresh: true,
+                        // markers: true,
+                        invalidateOnRefresh: true,
                     },
                 });
-                this.firstMoveTimeline.to(this.room.position, {
-                    x: () => {
-                        return this.sizes.width * 0.0014;
-                    },
-                });
+                this.firstMoveTimeline.fromTo(
+                    this.room.position,
+                    { x: 0, y: 0, z: 0 },
+                    {
+                        x: () => {
+                            return this.sizes.width * 0.0014;
+                        },
+                    }
+                );
 
                 // Second section -----------------------------------------
                 this.secondMoveTimeline = new GSAP.timeline({
@@ -169,6 +181,7 @@ export default class Controls {
                 this.room.position.set(0, 0, 0);
                 this.rectLight.width = 0.3;
                 this.rectLight.height = 0.4;
+                this.camera.orthographicCamera.position.set(0, 6.5, 10);
 
                 // First section -----------------------------------------
                 this.firstMoveTimeline = new GSAP.timeline({
@@ -177,7 +190,7 @@ export default class Controls {
                         start: "top top",
                         end: "bottom bottom",
                         scrub: 0.6,
-                        invalidateOnRefresh: true,
+                        // invalidateOnRefresh: true,
                     },
                 }).to(this.room.scale, {
                     x: 0.1,
@@ -302,7 +315,6 @@ export default class Controls {
                         start: "top top",
                         end: "bottom bottom",
                         scrub: 0.6,
-                        invalidateOnRefresh: true,
                     },
                 }).to(this.circleFirst.scale, {
                     x: 3,
@@ -317,7 +329,6 @@ export default class Controls {
                         start: "top top",
                         end: "bottom bottom",
                         scrub: 0.6,
-                        invalidateOnRefresh: true,
                     },
                 })
                     .to(
@@ -344,7 +355,6 @@ export default class Controls {
                         start: "top top",
                         end: "bottom bottom",
                         scrub: 0.6,
-                        invalidateOnRefresh: true,
                     },
                 }).to(this.circleThird.scale, {
                     x: 3,
